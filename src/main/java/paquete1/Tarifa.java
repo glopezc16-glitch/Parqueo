@@ -7,7 +7,35 @@ package paquete1;
  */
 public class Tarifa {
     private int idTarifa;
+    private String modo; //con esto se elige entre flat y variable 
+    private double montoFijo; 
+    private double montoPorHora;
+    private double montoPorFraccion; //me refiero a fraccion de tiempo
     
+    public Tarifa(int idTarifa, String modo, double montoFijo, double montoPorHora , double montoPorFraccion){
+        this.idTarifa = idTarifa; 
+        this.modo = modo;
+        this.montoFijo = montoFijo;
+        this.montoPorHora = montoPorHora;
+        this.montoPorFraccion = montoPorFraccion;
+         
+    }
+    
+    public double calcularMonto(Ticket t){
+        if (t.getFechaSalida()== null) return 0.0;
+        long minutos = t.calcularTimpo();
+        if("FLAT".equalsIgnoreCase(modo)){
+            return montoFijo;
+        } else{
+            double horas = minutos / 60.0;
+            return montoPorHora * horas;
+        }
+        
+        
+    }
+    
+    // metodos Getters
+    public int getIdTarifa(){ return idTarifa; }
     
     
 }
