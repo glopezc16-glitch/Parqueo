@@ -29,14 +29,14 @@ public class Ticket {
         this.spot = spot;
         this.tarifa = tarifa;
         this.fechaIngreso = LocalDateTime.now();
-        this.estado = "Activo";
+        this.estado = "ACTIVO";
         
     }
     
     public void cerrarTicket(){
         this.fechaSalida = LocalDateTime.now();
         this.monto = tarifa.calcularMonto(this);
-        this.estado = "Cerrado";
+        this.estado = "CERRADO";
         
         if (spot != null) area.liberarEspacio(spot);
     }

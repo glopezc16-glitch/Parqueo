@@ -59,27 +59,38 @@ refrescarTabla();
 
     }
     
-    private String pedirMetodoPago() {
-    String[] opciones = {"EFECTIVO", "TARJETA", "SALDO"};
-    JComboBox<String> combo = new JComboBox<>(opciones);
+    private String[] pedirDatosDePagoYTarifa() {
 
+    // Combos
+    JComboBox<String> cbMetodo = new JComboBox<>(new String[]{"EFECTIVO", "TARJETA", "SALDO"});
+    JComboBox<String> cbTarifa = new JComboBox<>(new String[]{"VARIABLE", "FLAT"});
+
+    // Panel
     JPanel panel = new JPanel();
+    panel.setLayout(new java.awt.GridLayout(0, 1, 5, 5));
+
     panel.add(new JLabel("Seleccione método de pago:"));
-    panel.add(combo);
+    panel.add(cbMetodo);
+
+    panel.add(new JLabel("Seleccione tipo de tarifa:"));
+    panel.add(cbTarifa);
 
     int res = JOptionPane.showConfirmDialog(
             this,
             panel,
-            "Método de pago",
+            "Datos de Pago y Tarifa",
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE
     );
 
     if (res == JOptionPane.OK_OPTION) {
-        return (String) combo.getSelectedItem();
-    } else {
-        return null; // usuario canceló
+        return new String[]{
+            (String) cbMetodo.getSelectedItem(),
+            (String) cbTarifa.getSelectedItem()
+        };
     }
+
+    return null; // cancelado
 }
     
     private void refrescarTabla() {
@@ -364,12 +375,14 @@ refrescarTabla();
 
     private void btnRegistrarRapidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarRapidoActionPerformed
 
-        String metodoPago = pedirMetodoPago();
-    if (metodoPago == null) {
-        
-        lblStatus.setText("Registro cancelado: no se seleccionó método de pago.");
-        return;
-    }
+    String[] datos = pedirDatosDePagoYTarifa();
+if (datos == null) {
+    lblStatus.setText("Registro cancelado.");
+    return;
+}
+
+String metodoPago = datos[0];
+String tipoTarifa = datos[1];
         
     String placa = tfPlaca.getText().trim();
     String nombre = tfNombre.getText().trim();
@@ -407,30 +420,42 @@ refrescarTabla();
 
     private void btnEntradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntradaActionPerformed
 
-    JTextField tfPl = new JTextField();
-    JTextField tfNom = new JTextField();
-    JTextField tfCar = new JTextField();
-    JComboBox<String> cbTipUsr = new JComboBox<>(new String[]{"ESTUDIANTE", "CATEDRATICO"});
-    JComboBox<String> cbTipVeh = new JComboBox<>(new String[]{"AUTO", "MOTO"});
-
-    JPanel p = new JPanel(new java.awt.GridLayout(0,1,4,4));
-    p.add(new JLabel("Placa:")); p.add(tfPl);
-    p.add(new JLabel("Nombre propietario:")); p.add(tfNom);
-    p.add(new JLabel("Carnet:")); p.add(tfCar);
-    p.add(new JLabel("Tipo usuario:")); p.add(cbTipUsr);
-    p.add(new JLabel("Tipo vehículo:")); p.add(cbTipVeh);
-
-    int res = JOptionPane.showConfirmDialog(this, p, "Registrar Entrada", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-    if (res == JOptionPane.OK_OPTION) {
-        // reasignar campos y llamar al mismo flujo
-        tfPlaca.setText(tfPl.getText().trim());
-        tfNombre.setText(tfNom.getText().trim());
-        tfCarnet.setText(tfCar.getText().trim());
-        cbTipoUsuario.setSelectedItem(cbTipUsr.getSelectedItem());
-        cbTipoVehiculo.setSelectedItem(cbTipVeh.getSelectedItem());
-        // usar el botón rápido para procesar (llama al método que ya definimos)
-        btnRegistrarRapidoActionPerformed(null);
+    String placa = JOptionPane.showInputDialog(this, "Ingrese placa del vehículo:");
+    if (placa == null) return;
+    placa = placa.trim();
+    if (placa.isEmpty()) {
+        lblStatus.setText("Placa vacía.");
+        return;
     }
+
+    String[] datos = pedirDatosDePagoYTarifa();
+    if (datos == null) {
+        lblStatus.setText("Registro cancelado.");
+        return;
+    }
+
+    String metodoPago = datos[0];
+    String tipoTarifa = datos[1];
+
+    Tarifa tarifa;
+    if ("FLAT".equalsIgnoreCase(tipoTarifa)) {
+        tarifa = new Tarifa(2, "FLAT", 25.0, 0.0, 0.0); 
+    } else {
+        tarifa = new Tarifa(1, "VARIABLE", 0.0, 5.0, 0.0);
+    }
+
+    boolean ok = parqueo.registrarEntradaRecurrentePorPlaca(placa, tarifa);
+
+    if (ok) {
+        lblStatus.setText("Reingreso registrado. Placa: " + placa +
+                          " - Pago: " + metodoPago +
+                          " - Tarifa: " + tipoTarifa);
+        refrescarTabla();
+    } else {
+        lblStatus.setText("No se encontró vehículo registrado con placa " + placa +
+                          " o no hay espacio disponible.");
+    }
+
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnEntradaActionPerformed
