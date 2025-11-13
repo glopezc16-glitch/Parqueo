@@ -408,12 +408,13 @@ refrescarTabla();
     private void btnSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalidaActionPerformed
 
 String placa = JOptionPane.showInputDialog(this, "Ingrese placa para registrar salida:");
-    if (placa == null) return; // canceló
+    if (placa == null) return;
     placa = placa.trim();
     if (placa.isEmpty()) {
         lblStatus.setText("Placa vacía.");
         return;
     }
+
     boolean ok = parqueo.registrarSalida(placa);
     if (ok) {
         lblStatus.setText("Salida registrada para " + placa);
@@ -421,7 +422,6 @@ String placa = JOptionPane.showInputDialog(this, "Ingrese placa para registrar s
         lblStatus.setText("No se encontró ticket activo para " + placa);
     }
     refrescarTabla();
-
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSalidaActionPerformed
 
