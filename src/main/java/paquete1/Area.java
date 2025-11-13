@@ -44,7 +44,7 @@ public class Area {
     public void liberarEspacio(Spot s){
         if (s != null && "OCUPADO".equals(s.getEstado())){
             s.liberar();
-            ocupacionActual = Match.max(0, ocupacionActual - 1);
+            ocupacionActual = Math.max(0, ocupacionActual - 1);
         }
     }
     public String getIdArea(){ return idArea; }

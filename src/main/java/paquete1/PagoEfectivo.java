@@ -8,6 +8,8 @@ package paquete1;
  *
  * @author Shily
  */
-public class PagoEfectivo {
-    
+public class PagoEfectivo extends Pago {
+    public PagoEfectivo(int idPago, double monto){super (idPago, "EFECTIVO", monto);}
+    @Override
+    public boolean procesarPago(){return validarPago();}
 }

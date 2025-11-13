@@ -23,7 +23,7 @@ public class Tarifa {
     
     public double calcularMonto(Ticket t){
         if (t.getFechaSalida()== null) return 0.0;
-        long minutos = t.calcularTimpo();
+        long minutos = t.calcularTiempo();
         if("FLAT".equalsIgnoreCase(modo)){
             return montoFijo;
         } else{
