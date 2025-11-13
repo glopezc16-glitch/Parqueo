@@ -54,10 +54,33 @@ if (cbTipoVehiculo.getItemCount() == 0) {
 // Opcional: centrar la ventana
 this.setLocationRelativeTo(null);
 
-// Llenar la tabla con los tickets actuales (si hay)
 refrescarTabla();
-        
+       
+
     }
+    
+    private String pedirMetodoPago() {
+    String[] opciones = {"EFECTIVO", "TARJETA", "SALDO"};
+    JComboBox<String> combo = new JComboBox<>(opciones);
+
+    JPanel panel = new JPanel();
+    panel.add(new JLabel("Seleccione método de pago:"));
+    panel.add(combo);
+
+    int res = JOptionPane.showConfirmDialog(
+            this,
+            panel,
+            "Método de pago",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
+    );
+
+    if (res == JOptionPane.OK_OPTION) {
+        return (String) combo.getSelectedItem();
+    } else {
+        return null; // usuario canceló
+    }
+}
     
     private void refrescarTabla() {
     ticketModel.setRowCount(0); // limpiar filas
@@ -341,6 +364,13 @@ refrescarTabla();
 
     private void btnRegistrarRapidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarRapidoActionPerformed
 
+        String metodoPago = pedirMetodoPago();
+    if (metodoPago == null) {
+        
+        lblStatus.setText("Registro cancelado: no se seleccionó método de pago.");
+        return;
+    }
+        
     String placa = tfPlaca.getText().trim();
     String nombre = tfNombre.getText().trim();
     String carnet = tfCarnet.getText().trim();
