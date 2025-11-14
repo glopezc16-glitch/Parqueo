@@ -155,6 +155,7 @@ refrescarTabla();
         jLabel1 = new javax.swing.JLabel();
         cbTipoVehiculo = new javax.swing.JComboBox<>();
         btnRegistrarRapido = new javax.swing.JButton();
+        btnMapa = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnEntrada = new javax.swing.JButton();
         btnSalida = new javax.swing.JButton();
@@ -220,6 +221,13 @@ refrescarTabla();
             }
         });
 
+        btnMapa.setText("Mapa ");
+        btnMapa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMapaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -248,11 +256,12 @@ refrescarTabla();
                         .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(cbTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(147, Short.MAX_VALUE))
+                            .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnRegistrarRapido, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnMapa)))
+                .addContainerGap(127, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,12 +278,18 @@ refrescarTabla();
                     .addComponent(lblCarnet)
                     .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(cbTipoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegistrarRapido))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(cbTipoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRegistrarRapido))
+                        .addContainerGap(19, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnMapa)
+                        .addContainerGap())))
         );
 
         btnEntrada.setText("Registrar Entrada");
@@ -305,7 +320,7 @@ refrescarTabla();
             }
         });
 
-        lblSpots.setText("Spots disponibles: --");
+        lblSpots.setText("Spots disponibles: 120");
 
         btnCargar.setText("Cargar");
         btnCargar.addActionListener(new java.awt.event.ActionListener() {
@@ -369,7 +384,7 @@ refrescarTabla();
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 57, Short.MAX_VALUE))
+                .addGap(0, 60, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -670,6 +685,12 @@ lblStatus.setText("Guardado (si la persistencia está implementada).");
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCargarActionPerformed
 
+    private void btnMapaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMapaActionPerformed
+new MapaParqueo(parqueo).setVisible(true);
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnMapaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -699,6 +720,7 @@ lblStatus.setText("Guardado (si la persistencia está implementada).");
     private javax.swing.JButton btnCargar;
     private javax.swing.JButton btnEntrada;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnMapa;
     private javax.swing.JButton btnRefrescar;
     private javax.swing.JButton btnRegistrarRapido;
     private javax.swing.JButton btnSalida;

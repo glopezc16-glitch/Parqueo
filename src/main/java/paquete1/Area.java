@@ -17,15 +17,22 @@ public class Area {
     private List<Spot> spots = new ArrayList<>();
     
     public Area(String idArea, String nombre, int capacidadMaxima){
-        this.idArea = idArea;
-        this.nombre = nombre;
-        this.capacidadMaxima = capacidadMaxima;
-        
-        for (int i = 1; i <= capacidadMaxima; i++){
-            spots.add(new Spot(idArea + "-" + i, "FREE", "Auto",this ));
-        }
-        
+    this.idArea = idArea;
+    this.nombre = nombre;
+    this.capacidadMaxima = capacidadMaxima;
+
+    // Tipo lógico interno: Auto/Moto
+    String tipoPorDefecto;
+    if ("Motos".equalsIgnoreCase(nombre)) {
+        tipoPorDefecto = "Moto";   // coincide con combo
+    } else {
+        tipoPorDefecto = "Auto";   // docentes y estudiantes usan carro, pero lógicamente es Auto
     }
+
+    for (int i = 1; i <= capacidadMaxima; i++){
+        spots.add(new Spot(idArea + "-" + i, "FREE", tipoPorDefecto, this));
+    }
+}
     
     public boolean hayEspacioDisponible(){
         return ocupacionActual < capacidadMaxima;

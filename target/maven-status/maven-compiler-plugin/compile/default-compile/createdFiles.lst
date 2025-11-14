@@ -1,4 +1,5 @@
 com\mycompany\parqueo\Interfaz$5.class
+com\mycompany\parqueo\Interfaz$12.class
 paquete1\PagoTarjeta.class
 com\mycompany\parqueo\Parqueo.class
 com\mycompany\parqueo\Interfaz$10.class
@@ -8,6 +9,7 @@ com\mycompany\parqueo\Interfaz$7.class
 paquete1\Persona.class
 paquete1\Tarifa.class
 com\mycompany\parqueo\Interfaz$2.class
+com\mycompany\parqueo\MapaParqueo.class
 com\mycompany\parqueo\Interfaz$8.class
 paquete1\AccessLog.class
 paquete1\Spot.class

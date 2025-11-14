@@ -4,40 +4,90 @@
 
 package com.mycompany.parqueo;
 
-/**
- *
- * @author Shily
- */
 import paquete1.*;
 import java.util.*;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Parqueo {
-    
+
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(() -> {
             new Interfaz().setVisible(true);
         });
     }
 
-    
     private List<Area> listaAreas = new ArrayList<>();
     private List<Vehiculo> listaVehiculos = new ArrayList<>();
     private List<Ticket> listaTickets = new ArrayList<>();
     private List<Persona> listaPersonas = new ArrayList<>();
-    private String modoTarifa = "Variable"; 
+    private String modoTarifa = "Variable";
 
-    
     public Parqueo() {
-        listaAreas.add(new Area("A", "Area A", 100));
-        listaAreas.add(new Area("B", "Area B", 100));
+        listaAreas.add(new Area("A", "Motos", 40));
+        listaAreas.add(new Area("B", "Docentes", 40));
+        listaAreas.add(new Area("C", "Estudiantes", 40));
     }
 
-    public boolean registrarEntrada(String placa, String tipoVehiculo, Persona propietario, Tarifa tarifa) {
+    
 
-        if (propietario != null && propietario.getCarnet() != null && !propietario.getCarnet().isEmpty()) {
+    private void limpiarReservasExpiradas() {
+        LocalDateTime now = LocalDateTime.now();
+        for (Ticket t : listaTickets) {
+            if ("FLAT_RESERVADO".equalsIgnoreCase(t.getEstado())
+                    && t.getFechaSalida() != null) {
+
+                long minutos = Duration.between(t.getFechaSalida(), now).toMinutes();
+
+                if (minutos > 120) { 
+                    Spot s = t.getSpot();
+                    Area a = t.getArea();
+                    if (s != null && a != null) {
+                        a.liberarEspacio(s);
+                    }
+                    t.setEstado("CERRADO");
+                }
+            }
+        }
+    }
+
+    public boolean intentarReingresoFlat(String placa) {
+        limpiarReservasExpiradas(); 
+        LocalDateTime now = LocalDateTime.now();
+
+        for (int i = listaTickets.size() - 1; i >= 0; i--) {
+            Ticket t = listaTickets.get(i);
+
+            if (t.getVehiculo().getPlaca().equalsIgnoreCase(placa)
+                    && "FLAT".equalsIgnoreCase(t.getTarifa().getModo())
+                    && "FLAT_RESERVADO".equalsIgnoreCase(t.getEstado())
+                    && t.getFechaSalida() != null) {
+
+                long mins = Duration.between(t.getFechaSalida(), now).toMinutes();
+
+                if (mins <= 120) { 
+                    t.setEstado("ACTIVO");
+                    Spot s = t.getSpot();
+                    if (s != null) {
+                        s.ocupar(); 
+                    }
+                    return true; 
+                }
+            }
+        }
+
+        return false; 
+    }
+
+    
+
+    public boolean registrarEntrada(String placa, String tipoVehiculo,
+                                    Persona propietario, Tarifa tarifa) {
+
+        
+        if (propietario != null && propietario.getCarnet() != null
+                && !propietario.getCarnet().isEmpty()) {
+
             Persona yaRegistrada = findPersonaByCarnet(propietario.getCarnet());
             if (yaRegistrada != null) {
                 propietario = yaRegistrada;
@@ -46,45 +96,37 @@ public class Parqueo {
             }
         }
 
+        
         Vehiculo v = findVehiculoByPlaca(placa);
         if (v == null) {
-            v = new Vehiculo(placa, tipoVehiculo, propietario != null ? propietario.getTipo() : "DESCONOCIDO");
+            v = new Vehiculo(
+                    placa,
+                    tipoVehiculo,
+                    propietario != null ? propietario.getTipo() : "DESCONOCIDO"
+            );
             listaVehiculos.add(v);
             if (propietario != null) {
                 propietario.asociarVehiculo(v);
             }
         }
 
-        for (Area a : listaAreas) {
-            if (a.hayEspacioDisponible()) {
-                Spot s = a.asignarEspacio(tipoVehiculo);
-                if (s != null) {
-                    Ticket t = new Ticket(v, a, s, tarifa);
-                    listaTickets.add(t);
-                    return true;
-                }
-            }
+        
+        Area areaDestino = seleccionarAreaPara(v);
+        if (areaDestino == null || !areaDestino.hayEspacioDisponible()) {
+            return false; 
         }
+
+        Spot s = areaDestino.asignarEspacio(v.getTipoVehiculo());
+        if (s != null) {
+            Ticket t = new Ticket(v, areaDestino, s, tarifa);
+            listaTickets.add(t);
+            return true;
+        }
+
         return false;
     }
-    
-    private void limpiarReservasExpiradas() {
-    LocalDateTime now = LocalDateTime.now();
-    for (Ticket t : listaTickets) {
-        if ("FLAT_RESERVADO".equalsIgnoreCase(t.getEstado()) && t.getFechaSalida() != null) {
-            long minutos = Duration.between(t.getFechaSalida(), now).toMinutes();
-            if (minutos > 120) {
-                Spot s = t.getSpot();
-                Area a = t.getArea();
-                if (s != null && a != null) {
-                    a.liberarEspacio(s);
-                }
-                t.setEstado("CERRADO");
-            }
-        }
-    }
-}
 
+   
     public boolean registrarEntradaRecurrentePorPlaca(String placa, Tarifa tarifa) {
 
         Vehiculo v = findVehiculoByPlaca(placa);
@@ -92,20 +134,19 @@ public class Parqueo {
             return false; 
         }
 
-        String tipoVehiculo = v.getTipoVehiculo();
-
-        for (Area a : listaAreas) {
-            if (a.hayEspacioDisponible()) {
-                Spot s = a.asignarEspacio(tipoVehiculo);
-                if (s != null) {
-                    Ticket t = new Ticket(v, a, s, tarifa);
-                    listaTickets.add(t);
-                    return true;
-                }
-            }
+        Area areaDestino = seleccionarAreaPara(v);
+        if (areaDestino == null || !areaDestino.hayEspacioDisponible()) {
+            return false;
         }
 
-        return false; 
+        Spot s = areaDestino.asignarEspacio(v.getTipoVehiculo());
+        if (s != null) {
+            Ticket t = new Ticket(v, areaDestino, s, tarifa);
+            listaTickets.add(t);
+            return true;
+        }
+
+        return false;
     }
 
     public boolean registrarSalida(String placa) {
@@ -117,34 +158,8 @@ public class Parqueo {
         return false;
     }
 
-    public boolean intentarReingresoFlat(String placa) {
-        limpiarReservasExpiradas();           // por si ya se vencieron reservas
-        LocalDateTime now = LocalDateTime.now();
-
-        for (int i = listaTickets.size() - 1; i >= 0; i--) {
-            Ticket t = listaTickets.get(i);
-
-            if (t.getVehiculo().getPlaca().equalsIgnoreCase(placa)
-                && "FLAT".equalsIgnoreCase(t.getTarifa().getModo())
-                && "FLAT_RESERVADO".equalsIgnoreCase(t.getEstado())
-                && t.getFechaSalida() != null) {
-
-                long mins = Duration.between(t.getFechaSalida(), now).toMinutes();
-
-                if (mins <= 120) { // dentro de las 2 horas
-                    t.setEstado("ACTIVO");
-                    Spot s = t.getSpot();
-                    if (s != null) {
-                        s.ocupar();  // de RESERVADO a OCUPADO
-                    }
-                    return true;     // reingreso SIN cobro
-                }
-            }
-        }
-
-        return false; // no aplica reingreso gratis
-    }
     
+
     public List<Area> getListaAreas() {
         return listaAreas;
     }
@@ -158,12 +173,14 @@ public class Parqueo {
     }
 
     public int getTotalSpotsDisponibles() {
-    int total = 0;
-    for (Area a : listaAreas) {
-        total += a.getCapacidadMaxima() - a.getOcupacionActual();
+        int total = 0;
+        for (Area a : listaAreas) {
+            total += a.getCapacidadMaxima() - a.getOcupacionActual();
+        }
+        return total;
     }
-    return total;
-}
+
+ 
 
     private Persona findPersonaByCarnet(String carnet) {
         if (carnet == null) return null;
@@ -189,5 +206,26 @@ public class Parqueo {
                 .findFirst()
                 .orElse(null);
     }
-    
+
+    private Area findAreaByNombre(String nombreArea) {
+        for (Area a : listaAreas) {
+            if (a.getNombre().equalsIgnoreCase(nombreArea)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    private Area seleccionarAreaPara(Vehiculo v) {
+      
+        if ("Moto".equalsIgnoreCase(v.getTipoVehiculo())) {
+            return findAreaByNombre("Motos");
+        }
+        
+        if ("CATEDRATICO".equalsIgnoreCase(v.getTipoUsuario())) {
+            return findAreaByNombre("Docentes");
+        }
+        
+        return findAreaByNombre("Estudiantes");
+    }
 }
