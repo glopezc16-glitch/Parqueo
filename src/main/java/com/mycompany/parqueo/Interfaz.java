@@ -21,6 +21,17 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.swing.JFileChooser;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 public class Interfaz extends javax.swing.JFrame {
     
@@ -150,6 +161,7 @@ refrescarTabla();
         btnRefrescar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         lblSpots = new javax.swing.JLabel();
+        btnCargar = new javax.swing.JButton();
         scrollTickets = new javax.swing.JScrollPane();
         tablaTickets = new javax.swing.JTable();
         lblStatus = new javax.swing.JLabel();
@@ -295,19 +307,29 @@ refrescarTabla();
 
         lblSpots.setText("Spots disponibles: --");
 
+        btnCargar.setText("Cargar");
+        btnCargar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCargarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(btnEntrada)
-                .addGap(30, 30, 30)
-                .addComponent(btnSalida)
-                .addGap(26, 26, 26)
-                .addComponent(btnRefrescar)
-                .addGap(18, 18, 18)
-                .addComponent(btnGuardar)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnCargar)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnEntrada)
+                        .addGap(30, 30, 30)
+                        .addComponent(btnSalida)
+                        .addGap(26, 26, 26)
+                        .addComponent(btnRefrescar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnGuardar)))
                 .addGap(45, 45, 45)
                 .addComponent(lblSpots)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -315,7 +337,8 @@ refrescarTabla();
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addComponent(btnCargar)
+                .addGap(11, 11, 11)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEntrada)
                     .addComponent(btnSalida)
@@ -524,6 +547,54 @@ String placa = JOptionPane.showInputDialog(this, "Ingrese placa para registrar s
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
 
+        JFileChooser chooser = new JFileChooser();
+    chooser.setDialogTitle("Guardar tickets como CSV");
+    int opcion = chooser.showSaveDialog(this);
+
+    if (opcion != JFileChooser.APPROVE_OPTION) {
+        lblStatus.setText("Guardado cancelado.");
+        return;
+    }
+
+    File archivo = chooser.getSelectedFile();
+   
+    if (!archivo.getName().toLowerCase().endsWith(".csv")) {
+        archivo = new File(archivo.getParentFile(), archivo.getName() + ".csv");
+    }
+
+    
+    try (PrintWriter out = new PrintWriter(new FileWriter(archivo))) {
+
+       
+        out.println("ID,Placa,Area,Spot,Ingreso,Salida,Monto,Estado");
+
+        
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        for (Ticket t : parqueo.getListaTickets()) {
+            String id = t.getIdTicket();
+            String placa = t.getVehiculo() != null ? t.getVehiculo().getPlaca() : "";
+            String area = t.getArea() != null ? t.getArea().getNombre() : "";
+            String spot = t.getSpot() != null ? t.getSpot().getIdSpot() : "";
+            String ingreso = (t.getFechaIngreso() != null) ? t.getFechaIngreso().format(dtf) : "";
+            String salida = (t.getFechaSalida() != null) ? t.getFechaSalida().format(dtf) : "";
+            double monto = t.getMonto();
+            String estado = t.getEstado();
+
+           
+            out.printf("%s,%s,%s,%s,%s,%s,%.2f,%s%n",
+                    id, placa, area, spot, ingreso, salida, monto, estado);
+        }
+
+        lblStatus.setText("Tickets guardados en: " + archivo.getAbsolutePath());
+
+    } catch (IOException ex) {
+        lblStatus.setText("Error al guardar CSV: " + ex.getMessage());
+        JOptionPane.showMessageDialog(this,
+                "Ocurrió un error al guardar el archivo:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+        
 lblStatus.setText("Guardado (si la persistencia está implementada).");
         // TODO add your handling code here:
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -535,6 +606,69 @@ lblStatus.setText("Guardado (si la persistencia está implementada).");
     private void cbTipoVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoVehiculoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbTipoVehiculoActionPerformed
+
+    private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
+
+ JFileChooser chooser = new JFileChooser();
+    chooser.setDialogTitle("Cargar tickets desde CSV");
+    int opcion = chooser.showOpenDialog(this);
+
+    if (opcion != JFileChooser.APPROVE_OPTION) {
+        lblStatus.setText("Carga cancelada.");
+        return;
+    }
+
+    File archivo = chooser.getSelectedFile();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+
+        // 1. Limpiar la tabla actual
+        ticketModel.setRowCount(0);
+
+        // 2. Leer primera línea (encabezado) y descartarla
+        String linea = br.readLine(); // encabezado: ID,Placa,...
+
+        // 3. Leer cada línea de datos
+        while ((linea = br.readLine()) != null) {
+            if (linea.trim().isEmpty()) continue;
+
+            // Separar por coma
+            String[] parts = linea.split(",", -1); // -1 para conservar campos vacíos
+
+            if (parts.length < 8) {
+                continue; // línea incompleta, la ignoramos
+            }
+
+            String id      = parts[0];
+            String placa   = parts[1];
+            String area    = parts[2];
+            String spot    = parts[3];
+            String ingreso = parts[4];
+            String salida  = parts[5];
+            double monto   = 0.0;
+            try {
+                monto = Double.parseDouble(parts[6]);
+            } catch (NumberFormatException ex) {
+                monto = 0.0;
+            }
+            String estado  = parts[7];
+
+            // Agregar fila a la tabla
+            ticketModel.addRow(new Object[]{
+                id, placa, area, spot, ingreso, salida, monto, estado
+            });
+        }
+
+        lblStatus.setText("CSV cargado: " + archivo.getName());
+
+    } catch (IOException ex) {
+        lblStatus.setText("Error al cargar CSV: " + ex.getMessage());
+        JOptionPane.showMessageDialog(this,
+                "Ocurrió un error al leer el archivo:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCargarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -562,6 +696,7 @@ lblStatus.setText("Guardado (si la persistencia está implementada).");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCargar;
     private javax.swing.JButton btnEntrada;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnRefrescar;
