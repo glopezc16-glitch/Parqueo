@@ -59,6 +59,12 @@ refrescarTabla();
 
     }
     
+    private void actualizarSpots() {
+    int disponibles = parqueo.getTotalSpotsDisponibles();
+    lblSpots.setText("Spots disponibles: " + disponibles);
+}
+    
+    
     private String[] pedirDatosDePagoYTarifa() {
 
     // Combos
@@ -143,6 +149,7 @@ refrescarTabla();
         btnSalida = new javax.swing.JButton();
         btnRefrescar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
+        lblSpots = new javax.swing.JLabel();
         scrollTickets = new javax.swing.JScrollPane();
         tablaTickets = new javax.swing.JTable();
         lblStatus = new javax.swing.JLabel();
@@ -229,9 +236,11 @@ refrescarTabla();
                         .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(cbTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnRegistrarRapido, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(147, Short.MAX_VALUE))
+                            .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(147, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnRegistrarRapido, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,6 +293,8 @@ refrescarTabla();
             }
         });
 
+        lblSpots.setText("Spots disponibles: --");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -297,6 +308,8 @@ refrescarTabla();
                 .addComponent(btnRefrescar)
                 .addGap(18, 18, 18)
                 .addComponent(btnGuardar)
+                .addGap(45, 45, 45)
+                .addComponent(lblSpots)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -307,7 +320,8 @@ refrescarTabla();
                     .addComponent(btnEntrada)
                     .addComponent(btnSalida)
                     .addComponent(btnRefrescar)
-                    .addComponent(btnGuardar))
+                    .addComponent(btnGuardar)
+                    .addComponent(lblSpots))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -397,7 +411,12 @@ String tipoTarifa = datos[1];
     }
 
     Persona p = new Persona((int)(Math.random() * 100000), nombre, carnet, tipoUsuario);
-    Tarifa tarifa = new Tarifa(1, "VARIABLE", 0.0, 5.0, 0.0);
+    Tarifa tarifa;
+if(tipoTarifa.equals("FLAT")){
+    tarifa = new Tarifa(2, "FLAT", 10.0, 0.0, 0.0);
+} else {
+    tarifa = new Tarifa(1, "VARIABLE", 0.0, 5.0, 0.0);
+}
 
     boolean ok = parqueo.registrarEntrada(placa, tipoVeh, p, tarifa);
     if (ok) {
@@ -414,7 +433,8 @@ String tipoTarifa = datos[1];
     cbTipoUsuario.setSelectedIndex(0);
     cbTipoVehiculo.setSelectedIndex(0);
         
-        
+        actualizarSpots();
+
         // TODO add your handling code here:
     }//GEN-LAST:event_btnRegistrarRapidoActionPerformed
 
@@ -428,6 +448,15 @@ String tipoTarifa = datos[1];
         return;
     }
 
+    // 2. Intentar reingreso FLAT sin volver a cobrar
+    boolean reingresoGratis = parqueo.intentarReingresoFlat(placa);
+    if (reingresoGratis) {
+        lblStatus.setText("Reingreso FLAT sin cobro para placa " + placa);
+        refrescarTabla();
+        return;   // MUY IMPORTANTE: aquí terminamos, no pedimos método de pago
+    }
+
+    // 3. Si no aplica reingreso gratis, ahora sí pedimos método de pago + tarifa
     String[] datos = pedirDatosDePagoYTarifa();
     if (datos == null) {
         lblStatus.setText("Registro cancelado.");
@@ -437,13 +466,15 @@ String tipoTarifa = datos[1];
     String metodoPago = datos[0];
     String tipoTarifa = datos[1];
 
+    // 4. Crear Tarifa según lo seleccionado
     Tarifa tarifa;
     if ("FLAT".equalsIgnoreCase(tipoTarifa)) {
-        tarifa = new Tarifa(2, "FLAT", 25.0, 0.0, 0.0); 
+        tarifa = new Tarifa(2, "FLAT", 10.0, 0.0, 0.0);   // Q10 todo el día
     } else {
-        tarifa = new Tarifa(1, "VARIABLE", 0.0, 5.0, 0.0);
+        tarifa = new Tarifa(1, "VARIABLE", 0.0, 5.0, 0.0); // Q5 por hora
     }
 
+    // 5. Registrar entrada recurrente (aquí sí paga de nuevo)
     boolean ok = parqueo.registrarEntradaRecurrentePorPlaca(placa, tarifa);
 
     if (ok) {
@@ -455,6 +486,7 @@ String tipoTarifa = datos[1];
         lblStatus.setText("No se encontró vehículo registrado con placa " + placa +
                           " o no hay espacio disponible.");
     }
+actualizarSpots();
 
 
         // TODO add your handling code here:
@@ -477,6 +509,9 @@ String placa = JOptionPane.showInputDialog(this, "Ingrese placa para registrar s
         lblStatus.setText("No se encontró ticket activo para " + placa);
     }
     refrescarTabla();
+    
+    actualizarSpots();
+
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSalidaActionPerformed
 
@@ -540,6 +575,7 @@ lblStatus.setText("Guardado (si la persistencia está implementada).");
     private javax.swing.JLabel lblCarnet;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPlaca;
+    private javax.swing.JLabel lblSpots;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblTipoUsuario;
     private javax.swing.JScrollPane scrollTickets;

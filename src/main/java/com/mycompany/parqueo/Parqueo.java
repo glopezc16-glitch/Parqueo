@@ -11,6 +11,9 @@ package com.mycompany.parqueo;
 import paquete1.*;
 import java.util.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Parqueo {
     
     public static void main(String[] args) {
@@ -28,8 +31,8 @@ public class Parqueo {
 
     
     public Parqueo() {
-        listaAreas.add(new Area("A", "Area A", 5));
-        listaAreas.add(new Area("B", "Area B", 3));
+        listaAreas.add(new Area("A", "Area A", 100));
+        listaAreas.add(new Area("B", "Area B", 100));
     }
 
     public boolean registrarEntrada(String placa, String tipoVehiculo, Persona propietario, Tarifa tarifa) {
@@ -64,6 +67,23 @@ public class Parqueo {
         }
         return false;
     }
+    
+    private void limpiarReservasExpiradas() {
+    LocalDateTime now = LocalDateTime.now();
+    for (Ticket t : listaTickets) {
+        if ("FLAT_RESERVADO".equalsIgnoreCase(t.getEstado()) && t.getFechaSalida() != null) {
+            long minutos = Duration.between(t.getFechaSalida(), now).toMinutes();
+            if (minutos > 120) {
+                Spot s = t.getSpot();
+                Area a = t.getArea();
+                if (s != null && a != null) {
+                    a.liberarEspacio(s);
+                }
+                t.setEstado("CERRADO");
+            }
+        }
+    }
+}
 
     public boolean registrarEntradaRecurrentePorPlaca(String placa, Tarifa tarifa) {
 
@@ -97,6 +117,34 @@ public class Parqueo {
         return false;
     }
 
+    public boolean intentarReingresoFlat(String placa) {
+        limpiarReservasExpiradas();           // por si ya se vencieron reservas
+        LocalDateTime now = LocalDateTime.now();
+
+        for (int i = listaTickets.size() - 1; i >= 0; i--) {
+            Ticket t = listaTickets.get(i);
+
+            if (t.getVehiculo().getPlaca().equalsIgnoreCase(placa)
+                && "FLAT".equalsIgnoreCase(t.getTarifa().getModo())
+                && "FLAT_RESERVADO".equalsIgnoreCase(t.getEstado())
+                && t.getFechaSalida() != null) {
+
+                long mins = Duration.between(t.getFechaSalida(), now).toMinutes();
+
+                if (mins <= 120) { // dentro de las 2 horas
+                    t.setEstado("ACTIVO");
+                    Spot s = t.getSpot();
+                    if (s != null) {
+                        s.ocupar();  // de RESERVADO a OCUPADO
+                    }
+                    return true;     // reingreso SIN cobro
+                }
+            }
+        }
+
+        return false; // no aplica reingreso gratis
+    }
+    
     public List<Area> getListaAreas() {
         return listaAreas;
     }
@@ -109,6 +157,13 @@ public class Parqueo {
         return listaPersonas;
     }
 
+    public int getTotalSpotsDisponibles() {
+    int total = 0;
+    for (Area a : listaAreas) {
+        total += a.getCapacidadMaxima() - a.getOcupacionActual();
+    }
+    return total;
+}
 
     private Persona findPersonaByCarnet(String carnet) {
         if (carnet == null) return null;

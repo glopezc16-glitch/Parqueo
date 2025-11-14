@@ -33,13 +33,24 @@ public class Ticket {
         
     }
     
-    public void cerrarTicket(){
-        this.fechaSalida = LocalDateTime.now();
-        this.monto = tarifa.calcularMonto(this);
+   public void cerrarTicket() {
+    this.fechaSalida = LocalDateTime.now();
+    this.monto = tarifa.calcularMonto(this);
+
+    if ("FLAT".equalsIgnoreCase(tarifa.getModo())) {
+        // paga Q10, pero queda reservado 2 horas
+        this.estado = "FLAT_RESERVADO";
+        if (spot != null) {
+            spot.reservar();   // necesitas este método en Spot
+        }
+    } else {
+        // VARIABLE: se libera normal
         this.estado = "CERRADO";
-        
-        if (spot != null) area.liberarEspacio(spot);
+        if (spot != null && area != null) {
+            area.liberarEspacio(spot);
+        }
     }
+}
     
     public long calcularTiempo(){
         LocalDateTime end = (fechaSalida != null) ? fechaSalida : LocalDateTime.now();
@@ -50,6 +61,10 @@ public class Ticket {
     public void aplicarCobro(){
         this.monto = tarifa.calcularMonto(this);
         this.estado = "PAGADO";
+    }
+    
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
     
     public String getIdTicket(){return idTicket;}

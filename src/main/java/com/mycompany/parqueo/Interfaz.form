@@ -94,7 +94,7 @@
                       </Group>
                   </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="lblCarnet" min="-2" max="-2" attributes="0"/>
                               <Component id="lblTipoUsuario" min="-2" max="-2" attributes="0"/>
@@ -104,10 +104,13 @@
                               <Component id="cbTipoUsuario" min="-2" pref="159" max="-2" attributes="0"/>
                               <Component id="tfCarnet" min="-2" pref="159" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace pref="147" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="btnRegistrarRapido" min="-2" pref="188" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="btnRegistrarRapido" min="-2" pref="188" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace pref="147" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -234,6 +237,8 @@
                   <Component id="btnRefrescar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnGuardar" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                  <Component id="lblSpots" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -247,6 +252,7 @@
                       <Component id="btnSalida" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnRefrescar" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnGuardar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lblSpots" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="26" max="32767" attributes="0"/>
               </Group>
@@ -285,6 +291,11 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGuardarActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblSpots">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Spots disponibles: --"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

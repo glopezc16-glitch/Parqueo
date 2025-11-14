@@ -7,7 +7,7 @@ package paquete1;
  */
 public class Tarifa {
     private int idTarifa;
-    private String modo; //con esto se elige entre flat y variable 
+    private String modo; //no debo olvidar que esto es lo de flat y variable 
     private double montoFijo; 
     private double montoPorHora;
     private double montoPorFraccion; //me refiero a fraccion de tiempo
@@ -34,7 +34,7 @@ public class Tarifa {
         
     }
     
-    // metodos Getters
+    public String getModo(){ return modo; }
     public int getIdTarifa(){ return idTarifa; }
     
     

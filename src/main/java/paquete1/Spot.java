@@ -25,6 +25,11 @@ public class Spot {
     public void liberar(){
         this.estado = "FREE";
     }
+    
+    public void reservar() {
+    this.estado = "RESERVADO";
+}
+    
     public String getIdSpot(){ return idSpot; }
     public String getEstado(){ return estado; }
     public String getTipoVehiculo(){ return tipoVehiculo; }
