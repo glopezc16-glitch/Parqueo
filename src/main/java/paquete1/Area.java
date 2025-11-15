@@ -21,12 +21,12 @@ public class Area {
     this.nombre = nombre;
     this.capacidadMaxima = capacidadMaxima;
 
-    // Tipo lógico interno: Auto/Moto
+    
     String tipoPorDefecto;
     if ("Motos".equalsIgnoreCase(nombre)) {
-        tipoPorDefecto = "Moto";   // coincide con combo
+        tipoPorDefecto = "Moto";   // para el cobo box
     } else {
-        tipoPorDefecto = "Auto";   // docentes y estudiantes usan carro, pero lógicamente es Auto
+        tipoPorDefecto = "Auto";   
     }
 
     for (int i = 1; i <= capacidadMaxima; i++){

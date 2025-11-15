@@ -28,7 +28,6 @@ public class AccessLog {
     }
 
     public void registrarEvento() {
-        // puede guardarse en BaseDatos o fichero
         System.out.println(this.toString());
     }
 

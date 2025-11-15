@@ -17,9 +17,9 @@ public class MapaParqueo extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        setLayout(new GridLayout(1, 3)); // 3 columnas: A, B, C
+        setLayout(new GridLayout(1, 3)); 
 
-        // Generamos panel para cada área
+        
         for (Area area : parqueo.getListaAreas()) {
             add(crearPanelArea(area));
         }
@@ -44,7 +44,7 @@ public class MapaParqueo extends JFrame {
             else if (s.getEstado().equals("OCUPADO"))
                 btn.setBackground(Color.RED);
             else
-                btn.setBackground(Color.ORANGE); // Reservado flat
+                btn.setBackground(Color.ORANGE); 
 
             panel.add(btn);
         }

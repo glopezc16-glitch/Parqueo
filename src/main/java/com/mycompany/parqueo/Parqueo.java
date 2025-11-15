@@ -5,13 +5,15 @@
 package com.mycompany.parqueo;
 
 import paquete1.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Parqueo {
 
     public static void main(String[] args) {
+
         java.awt.EventQueue.invokeLater(() -> {
             new Interfaz().setVisible(true);
         });
@@ -28,8 +30,6 @@ public class Parqueo {
         listaAreas.add(new Area("B", "Docentes", 40));
         listaAreas.add(new Area("C", "Estudiantes", 40));
     }
-
-    
 
     private void limpiarReservasExpiradas() {
         LocalDateTime now = LocalDateTime.now();
@@ -79,12 +79,9 @@ public class Parqueo {
         return false; 
     }
 
-    
-
     public boolean registrarEntrada(String placa, String tipoVehiculo,
                                     Persona propietario, Tarifa tarifa) {
 
-        
         if (propietario != null && propietario.getCarnet() != null
                 && !propietario.getCarnet().isEmpty()) {
 
@@ -96,7 +93,6 @@ public class Parqueo {
             }
         }
 
-        
         Vehiculo v = findVehiculoByPlaca(placa);
         if (v == null) {
             v = new Vehiculo(
@@ -110,7 +106,6 @@ public class Parqueo {
             }
         }
 
-        
         Area areaDestino = seleccionarAreaPara(v);
         if (areaDestino == null || !areaDestino.hayEspacioDisponible()) {
             return false; 
@@ -126,7 +121,6 @@ public class Parqueo {
         return false;
     }
 
-   
     public boolean registrarEntradaRecurrentePorPlaca(String placa, Tarifa tarifa) {
 
         Vehiculo v = findVehiculoByPlaca(placa);
@@ -158,8 +152,6 @@ public class Parqueo {
         return false;
     }
 
-    
-
     public List<Area> getListaAreas() {
         return listaAreas;
     }
@@ -179,8 +171,6 @@ public class Parqueo {
         }
         return total;
     }
-
- 
 
     private Persona findPersonaByCarnet(String carnet) {
         if (carnet == null) return null;
@@ -217,15 +207,15 @@ public class Parqueo {
     }
 
     private Area seleccionarAreaPara(Vehiculo v) {
-      
+
         if ("Moto".equalsIgnoreCase(v.getTipoVehiculo())) {
             return findAreaByNombre("Motos");
         }
-        
+
         if ("CATEDRATICO".equalsIgnoreCase(v.getTipoUsuario())) {
             return findAreaByNombre("Docentes");
         }
-        
+
         return findAreaByNombre("Estudiantes");
     }
 }

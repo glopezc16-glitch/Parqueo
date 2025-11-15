@@ -15,7 +15,7 @@ public class Persona {
     private String nombre; 
     private String carnet;
     private String tipo; //aqui debo asignar si es estudiante o catedratico
-    private List<Vehiculo> vehiculos = new ArrayList<>();
+    private List<Vehiculo> vehiculos = new ArrayList<>(); // Inge esto es por lo que se menciono n clase de si una persona tiene más de un carro
     
     
     public Persona (int idPersona, String nombre, String carnet, String tipo){

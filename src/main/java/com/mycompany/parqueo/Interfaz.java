@@ -9,8 +9,7 @@ package com.mycompany.parqueo;
  * @author Shily
  */
 
-import paquete1.*; // tus modelos: Persona, Vehiculo, Area, Ticket, Tarifa, Spot...
-// si Parqueo lo tienes en ese paquete
+import paquete1.*; 
 import javax.swing.table.DefaultTableModel;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
@@ -38,8 +37,12 @@ public class Interfaz extends javax.swing.JFrame {
 private Parqueo parqueo;
 private DefaultTableModel ticketModel;
 private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     
+
 private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Interfaz.class.getName());
+
+
 
     /**
      * Creates new form Interfaz
@@ -62,7 +65,7 @@ if (cbTipoVehiculo.getItemCount() == 0) {
     cbTipoVehiculo.addItem("MOTO");
 }
 
-// Opcional: centrar la ventana
+
 this.setLocationRelativeTo(null);
 
 refrescarTabla();
@@ -78,11 +81,11 @@ refrescarTabla();
     
     private String[] pedirDatosDePagoYTarifa() {
 
-    // Combos
+    
     JComboBox<String> cbMetodo = new JComboBox<>(new String[]{"EFECTIVO", "TARJETA", "SALDO"});
     JComboBox<String> cbTarifa = new JComboBox<>(new String[]{"VARIABLE", "FLAT"});
 
-    // Panel
+    
     JPanel panel = new JPanel();
     panel.setLayout(new java.awt.GridLayout(0, 1, 5, 5));
 
@@ -131,8 +134,7 @@ refrescarTabla();
         });
     }
 }
-    
-    
+       
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -155,14 +157,13 @@ refrescarTabla();
         jLabel1 = new javax.swing.JLabel();
         cbTipoVehiculo = new javax.swing.JComboBox<>();
         btnRegistrarRapido = new javax.swing.JButton();
-        btnMapa = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnEntrada = new javax.swing.JButton();
         btnSalida = new javax.swing.JButton();
-        btnRefrescar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         lblSpots = new javax.swing.JLabel();
         btnCargar = new javax.swing.JButton();
+        btnMapa = new javax.swing.JButton();
         scrollTickets = new javax.swing.JScrollPane();
         tablaTickets = new javax.swing.JTable();
         lblStatus = new javax.swing.JLabel();
@@ -221,13 +222,6 @@ refrescarTabla();
             }
         });
 
-        btnMapa.setText("Mapa ");
-        btnMapa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMapaActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -249,6 +243,7 @@ refrescarTabla();
                         .addComponent(cbTipoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(132, 132, 132)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnRegistrarRapido, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblCarnet)
@@ -256,12 +251,8 @@ refrescarTabla();
                         .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(cbTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnRegistrarRapido, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnMapa)))
-                .addContainerGap(127, Short.MAX_VALUE))
+                            .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -278,18 +269,12 @@ refrescarTabla();
                     .addComponent(lblCarnet)
                     .addComponent(tfCarnet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(cbTipoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRegistrarRapido))
-                        .addContainerGap(19, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnMapa)
-                        .addContainerGap())))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cbTipoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRegistrarRapido))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         btnEntrada.setText("Registrar Entrada");
@@ -303,13 +288,6 @@ refrescarTabla();
         btnSalida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalidaActionPerformed(evt);
-            }
-        });
-
-        btnRefrescar.setText("Refrescar Tickets");
-        btnRefrescar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRefrescarActionPerformed(evt);
             }
         });
 
@@ -329,37 +307,44 @@ refrescarTabla();
             }
         });
 
+        btnMapa.setText("Mapa de Ubicaciones");
+        btnMapa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMapaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnCargar)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnEntrada)
-                        .addGap(30, 30, 30)
-                        .addComponent(btnSalida)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnRefrescar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnGuardar)))
-                .addGap(45, 45, 45)
-                .addComponent(lblSpots)
+                .addComponent(btnEntrada)
+                .addGap(30, 30, 30)
+                .addComponent(btnSalida)
+                .addGap(76, 76, 76)
+                .addComponent(btnGuardar)
+                .addGap(18, 18, 18)
+                .addComponent(btnCargar)
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnMapa)
+                    .addComponent(lblSpots))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btnCargar)
-                .addGap(11, 11, 11)
+                .addContainerGap()
+                .addComponent(btnMapa)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEntrada)
                     .addComponent(btnSalida)
-                    .addComponent(btnRefrescar)
                     .addComponent(btnGuardar)
-                    .addComponent(lblSpots))
+                    .addComponent(lblSpots)
+                    .addComponent(btnCargar))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -383,18 +368,20 @@ refrescarTabla();
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 60, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(149, 149, 149))
                     .addComponent(scrollTickets))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(243, 243, 243)
                 .addComponent(lblStatus)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 36, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -407,7 +394,7 @@ refrescarTabla();
                 .addComponent(scrollTickets, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblStatus)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -427,14 +414,16 @@ refrescarTabla();
 
     private void btnRegistrarRapidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarRapidoActionPerformed
 
-    String[] datos = pedirDatosDePagoYTarifa();
-if (datos == null) {
-    lblStatus.setText("Registro cancelado.");
-    return;
-}
+                                                       
 
-String metodoPago = datos[0];
-String tipoTarifa = datos[1];
+    String[] datos = pedirDatosDePagoYTarifa();
+    if (datos == null) {
+        lblStatus.setText("Registro cancelado.");
+        return;
+    }
+
+    String metodoPago = datos[0];
+    String tipoTarifa = datos[1];
         
     String placa = tfPlaca.getText().trim();
     String nombre = tfNombre.getText().trim();
@@ -449,12 +438,13 @@ String tipoTarifa = datos[1];
     }
 
     Persona p = new Persona((int)(Math.random() * 100000), nombre, carnet, tipoUsuario);
+
     Tarifa tarifa;
-if(tipoTarifa.equals("FLAT")){
-    tarifa = new Tarifa(2, "FLAT", 10.0, 0.0, 0.0);
-} else {
-    tarifa = new Tarifa(1, "VARIABLE", 0.0, 5.0, 0.0);
-}
+    if (tipoTarifa.equals("FLAT")) {
+        tarifa = new Tarifa(2, "FLAT", 10.0, 0.0, 0.0);
+    } else {
+        tarifa = new Tarifa(1, "VARIABLE", 0.0, 5.0, 0.0);
+    }
 
     boolean ok = parqueo.registrarEntrada(placa, tipoVeh, p, tarifa);
     if (ok) {
@@ -470,8 +460,9 @@ if(tipoTarifa.equals("FLAT")){
     tfCarnet.setText("");
     cbTipoUsuario.setSelectedIndex(0);
     cbTipoVehiculo.setSelectedIndex(0);
-        
-        actualizarSpots();
+
+    actualizarSpots();
+
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnRegistrarRapidoActionPerformed
@@ -546,19 +537,12 @@ String placa = JOptionPane.showInputDialog(this, "Ingrese placa para registrar s
     } else {
         lblStatus.setText("No se encontró ticket activo para " + placa);
     }
+
     refrescarTabla();
-    
     actualizarSpots();
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSalidaActionPerformed
-
-    private void btnRefrescarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrescarActionPerformed
-
-     refrescarTabla();
-    lblStatus.setText("Tabla actualizada.");
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRefrescarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
 
@@ -721,7 +705,6 @@ new MapaParqueo(parqueo).setVisible(true);
     private javax.swing.JButton btnEntrada;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnMapa;
-    private javax.swing.JButton btnRefrescar;
     private javax.swing.JButton btnRegistrarRapido;
     private javax.swing.JButton btnSalida;
     private javax.swing.JComboBox<String> cbTipoUsuario;
